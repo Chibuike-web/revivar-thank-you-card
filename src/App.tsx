@@ -217,7 +217,7 @@ export default function App() {
 								className="w-full h-full object-cover"
 							/>
 							<h2
-								className="absolute text-white font-bold text-[40px] leading-[1.2em] text-center z-10 top-6 left-1/2 -translate-x-1/2 px-4 w-full max-w-[90%]"
+								className="absolute text-white font-semibold text-[48px] leading-[1.2em] text-center z-10 top-6 left-1/2 -translate-x-1/2 px-4 w-full max-w-[90%]"
 								style={{ fontFamily: fontType, color: fontColor }}
 							>
 								Thank You
