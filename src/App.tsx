@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { UnsplashImage } from "./utils/types";
 import { cn } from "./utils/cn";
 import { useQuery } from "@tanstack/react-query";
@@ -12,7 +12,8 @@ export default function App() {
 	const [fontColor, setFontColor] = useState("");
 	const [searchItem, setSearchItem] = useState("");
 	const [page, setPage] = useState(1);
-	const [currentPage, setCurrentPage] = useState<number | null>(null);
+	const [searchImage, setSearchImage] = useState("");
+	const [isOpen, setIsOpen] = useState(false);
 
 	const debouncedSearch = useDebounce(searchItem, 500);
 
@@ -47,6 +48,12 @@ export default function App() {
 		return <div className="grid place-items-center min-h-screen">Error loading images</div>;
 	}
 
+	useEffect(() => {
+		if (!searchItem) {
+			setIsOpen(false);
+		}
+	}, [searchItem]);
+
 	return (
 		<main className="flex flex-col w-full items-center justify-center min-h-screen p-6">
 			<div className="w-full flex flex-col items-center gap-10">
@@ -64,29 +71,71 @@ export default function App() {
 									placeholder="Search for image"
 									type="search"
 									value={searchItem}
-									onChange={(e) => setSearchItem(e.target.value)}
+									onChange={(e) => {
+										setSearchItem(e.target.value);
+										setIsOpen(true);
+									}}
 								/>
-								<div className="grid grid-cols-[repeat(auto-fill,minmax(40px,1fr))] bg-red-500 p-4 z-100 gap-4 mt-4 absolute left-0 right-0 top-1/2 h-[250px]">
-									{isFetching && <p>Loading...</p>}
-									{isError && <p>Error fetching images</p>}
-									{searchData?.results?.map((img) => (
-										<img
-											key={img.id}
-											src={img.urls.small}
-											alt={img.alt_description || "Unsplash image"}
-											className="w-full h-48 object-cover cursor-pointer rounded"
-											onClick={() => setSelectedIndex(img.id)}
-										/>
-									))}
-								</div>
+
+								{isOpen && (
+									<div className="absolute left-0 right-0 top-20 bg-white border border-gray-200 rounded-md shadow-lg p-4 max-h-100 overflow-y-scroll z-100">
+										{isFetching && <p>Loading...</p>}
+										{isError && <p>Error fetching images</p>}
+
+										{!isFetching && !isError && searchData?.results?.length > 0 && (
+											<div className="flex flex-col gap-4">
+												<div className="grid grid-cols-[repeat(auto-fill,minmax(60px,1fr))] gap-4">
+													{searchData.results.map((img) => (
+														<button
+															key={img.id}
+															onClick={() => {
+																setSearchImage(img.urls.small);
+																setIsOpen(false);
+															}}
+															className="focus:outline-none"
+														>
+															<img
+																src={img.urls.small}
+																alt={img.alt_description || "Unsplash image"}
+																className="w-full h-full object-cover cursor-pointer rounded"
+															/>
+														</button>
+													))}
+												</div>
+												<div className="flex justify-between items-center mt-4">
+													<button
+														className="px-3 py-1 bg-gray-200 font-medium rounded disabled:opacity-50 cursor-pointer hover:opacity-50"
+														onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+														disabled={page === 1}
+													>
+														Previous
+													</button>
+													<span className="font-semibold">Page {page}</span>
+													<button
+														className="px-3 py-1 bg-blue-500 text-white font-medium rounded disabled:opacity-50 cursor-pointer hover:opacity-50"
+														onClick={() => setPage((prev) => prev + 1)}
+														disabled={searchData?.total_pages && page >= searchData.total_pages}
+													>
+														Next
+													</button>
+												</div>
+											</div>
+										)}
+									</div>
+								)}
 							</div>
+
 							<div className="flex flex-col gap-2">
 								<h2>Select image</h2>
 								<div className="flex w-full justify-between gap-x-2 xl:gap-x-8">
 									{images.map((img, i) => (
 										<button
 											key={img.id}
-											onClick={() => setSelectedIndex(i)}
+											onClick={() => {
+												setSelectedIndex(i);
+												setSearchImage("");
+												setSearchItem("");
+											}}
 											className={cn(
 												"aspect-square rounded-sm xl:rounded-2xl overflow-hidden cursor-pointer bg-blue-500 outline-0 focus-within:border-2 focus-within:border-white focus-within:ring-2 focus-within:ring-blue-500",
 												selectedIndex === i
@@ -149,7 +198,7 @@ export default function App() {
 
 					<div className="w-[60%] aspect-4/5 rounded-md md:rounded-2xl overflow-hidden relative">
 						<img
-							src={images[selectedIndex].urls.small}
+							src={searchImage || images[selectedIndex].urls.small}
 							alt=""
 							className="w-full h-full object-cover"
 						/>
