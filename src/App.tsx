@@ -18,6 +18,7 @@ export default function App() {
 	const [searchImage, setSearchImage] = useState("");
 	const [isOpen, setIsOpen] = useState(false);
 	const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+	const [isDownloading, setIsDownloading] = useState(false);
 
 	const debouncedSearch = useDebounce(searchItem, 500);
 
@@ -51,18 +52,26 @@ export default function App() {
 	const cardRef = useRef<HTMLDivElement>(null);
 	const downloadImage = async () => {
 		if (cardRef.current) {
-			const dataUrl = await toPng(cardRef.current);
-			const link = document.createElement("a");
-			link.href = dataUrl;
-			link.download = "thank-you-card.png";
-			link.click();
-			setTimeout(() => {
-				setUserName("");
-				setFontColor("");
-				setFontType("");
-				setSelectedIndex(null);
-				setSearchItem("");
-			}, 300);
+			setIsDownloading(true);
+			try {
+				const dataUrl = await toPng(cardRef.current);
+				const link = document.createElement("a");
+				link.href = dataUrl;
+				link.download = "thank-you-card.png";
+				link.click();
+
+				setTimeout(() => {
+					setUserName("");
+					setFontColor("");
+					setFontType("");
+					setSelectedIndex(null);
+					setSearchItem("");
+				}, 300);
+			} catch (error) {
+				console.error(error);
+			} finally {
+				setIsDownloading(false);
+			}
 		}
 	};
 
@@ -182,10 +191,18 @@ export default function App() {
 							<FontColorPicker fontColor={fontColor} setFontColor={setFontColor} />
 						</div>
 						<button
-							className="w-full inline-block h-10 mt-10 rounded-sm bg-blue-500 focus-within:border-2 focus-within:border-white outline-0 text-white focus-within:ring-2 focus-within:ring-blue-500 hover:opacity-50 cursor-pointer"
+							className="w-full flex items-center justify-center h-10 mt-10 rounded-sm bg-blue-500 focus-within:border-2 focus-within:border-white outline-0 text-white focus-within:ring-2 focus-within:ring-blue-500 hover:opacity-50 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
 							onClick={downloadImage}
+							disabled={isDownloading}
 						>
-							Download
+							{isDownloading ? (
+								<span className="flex items-center gap-2">
+									<div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+									Downloading...
+								</span>
+							) : (
+								"Download"
+							)}
 						</button>
 					</div>
 
