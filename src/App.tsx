@@ -60,8 +60,8 @@ export default function App() {
 					<span className="w-full block"> Personalized</span>
 					<span className="w-full block">Thank You Card</span>
 				</h1>
-				<div className="w-full flex gap-10">
-					<div className="w-[40%]">
+				<div className="w-full flex flex-col gap-y-20 md:gap-x-10 md:flex-row">
+					<div className="md:w-[40%]">
 						<div className="flex flex-col gap-6">
 							<div className="flex flex-col gap-2 relative">
 								<h2>Search for image</h2>
@@ -84,7 +84,7 @@ export default function App() {
 										{!isFetching && !isError && searchData?.results?.length > 0 && (
 											<div className="flex flex-col gap-4">
 												<div className="grid grid-cols-[repeat(auto-fill,minmax(60px,1fr))] gap-4">
-													{searchData.results.map((img) => (
+													{searchData.results.map((img: UnsplashImage) => (
 														<button
 															key={img.id}
 															onClick={() => {
@@ -195,7 +195,7 @@ export default function App() {
 						</button>
 					</div>
 
-					<div className="w-[60%] aspect-4/5 rounded-md md:rounded-2xl overflow-hidden relative">
+					<div className="md:w-[60%] aspect-4/5 rounded-md md:rounded-2xl overflow-hidden relative">
 						<img
 							src={searchImage || images[selectedIndex].urls.small}
 							alt=""
