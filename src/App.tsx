@@ -14,8 +14,15 @@ export default function App() {
 	const [page, setPage] = useState(1);
 	const [searchImage, setSearchImage] = useState("");
 	const [isOpen, setIsOpen] = useState(false);
+	const [selectedIndex, setSelectedIndex] = useState(0);
 
 	const debouncedSearch = useDebounce(searchItem, 500);
+
+	useEffect(() => {
+		if (!searchItem) {
+			setIsOpen(false);
+		}
+	}, [searchItem]);
 
 	const {
 		data: searchData = {},
@@ -38,8 +45,6 @@ export default function App() {
 		gcTime: 1000 * 60 * 60,
 	});
 
-	const [selectedIndex, setSelectedIndex] = useState(0);
-
 	if (isLoading) {
 		return <div className="grid place-items-center min-h-screen">Loading...</div>;
 	}
@@ -47,12 +52,6 @@ export default function App() {
 	if (error) {
 		return <div className="grid place-items-center min-h-screen">Error loading images</div>;
 	}
-
-	useEffect(() => {
-		if (!searchItem) {
-			setIsOpen(false);
-		}
-	}, [searchItem]);
 
 	return (
 		<main className="flex flex-col w-full items-center justify-center min-h-screen p-6">
