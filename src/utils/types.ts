@@ -13,3 +13,23 @@ export type UnsplashImage = {
 		username: string;
 	};
 };
+
+export type ColorOption = {
+	label: string;
+	value: string;
+};
+
+export type FontColorPickerProps = {
+	fontColor: string;
+	setFontColor: (color: string) => void;
+};
+
+export type FontOption = {
+	label: string;
+	value: string;
+};
+
+export type FontTypePickerProps = {
+	fontType: string;
+	setFontType: (font: string) => void;
+};
