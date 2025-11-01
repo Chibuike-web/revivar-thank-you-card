@@ -224,7 +224,7 @@ export default function App() {
 							</h2>
 
 							<h2
-								className="absolute text-white font-bold text-[40px] text-center z-10 bottom-6 left-1/2 -translate-x-1/2 px-4 w-full wrap-break-word max-w-[90%] leading-[1em]"
+								className="absolute text-white font-semibold text-[40px] text-center z-10 bottom-6 left-1/2 -translate-x-1/2 px-4 w-full wrap-break-word max-w-[90%] leading-[1em]"
 								style={{ fontFamily: fontType, color: fontColor }}
 							>
 								{userName}
