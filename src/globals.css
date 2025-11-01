@@ -1,0 +1,10 @@
+@import "tailwindcss";
+
+body {
+	font-family: Inter;
+}
+
+button,
+input {
+	font-family: Inter;
+}
