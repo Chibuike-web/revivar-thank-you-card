@@ -56,6 +56,13 @@ export default function App() {
 			link.href = dataUrl;
 			link.download = "thank-you-card.png";
 			link.click();
+			setTimeout(() => {
+				setUserName("");
+				setFontColor("");
+				setFontType("");
+				setSelectedIndex(null);
+				setSearchItem("");
+			}, 300);
 		}
 	};
 
